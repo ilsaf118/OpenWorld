@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="ru" id="html-tag">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenWorld — Онлайн Энциклопедия</title>
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    {% block header %}
+    {% endblock %}
+</head>
+<body class="{% if request.COOKIES.theme %}{{ request.COOKIES.theme }}{% else %}light-theme{% endif %}">
+    <header>
+        <div class="container header-content">
+            <div class="logo">
+                <h1>Open<span>World</span></h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#">Главная</a></li>
+                    <li><a href="{% url 'articles' %}">Статьи</a></li>
+                </ul>
+            </nav>
+            <button class="theme-toggle" id="theme-toggle" aria-label="Переключить тему"></button>
+        </div>
+    </header>
+
+    {% block content %}
+    {% endblock %}
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 OpenWorld Энциклопедия. Все права защищены.</p>
+        </div>
+    </footer>
+
+    <script>
+        const toggleButton = document.getElementById('theme-toggle');
+        const htmlTag = document.getElementById('html-tag');
+
+        // Проверяем, есть ли сохранённая тема в localStorage
+        if (localStorage.getItem('theme') === 'dark') {
+            htmlTag.classList.add('dark-theme');
+            toggleButton.classList.add('active');
+        }
+
+        toggleButton.addEventListener('click', () => {
+            htmlTag.classList.toggle('dark-theme');
+            toggleButton.classList.toggle('active');
+
+            // Сохраняем выбор в localStorage
+            if (htmlTag.classList.contains('dark-theme')) {
+                localStorage.setItem('theme', 'dark');
+            } else {
+                localStorage.setItem('theme', 'light');
+            }
+        });
+    </script>
+
+</body>
+</html>

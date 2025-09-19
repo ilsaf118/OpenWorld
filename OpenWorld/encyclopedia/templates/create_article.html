@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Новая статья</h1>
+    <p>Поделитесь знаниями с миром. Ваша статья может изменить чью-то жизнь.</p>
+</div>
+
+<form class="article-form" method="POST" action="#">
+    {% csrf_token %}
+    <div class="form-group">
+        <label for="title">Заголовок статьи *</label>
+        <input type="text" id="title" name="title" placeholder="Введите заголовок статьи" required>
+    </div>
+
+    <div class="form-group">
+        <label for="category">Категория *</label>
+        <select id="category" name="category" required>
+            <option value="" disabled selected>Выберите категорию</option>
+            <option value="science">Наука</option>
+            <option value="history">История</option>
+            <option value="culture">Культура</option>
+            <option value="technology">Технологии</option>
+            <option value="nature">Природа</option>
+            <option value="philosophy">Философия</option>
+            <option value="art">Искусство</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="tags">Теги (через запятую)</label>
+        <input type="text" id="tags" name="tags" placeholder="например: физика, пространство, время">
+    </div>
+
+    <div class="form-group">
+        <label for="content">Содержание статьи *</label>
+        <textarea id="content" name="content" rows="15" placeholder="Начните писать здесь... Поддерживается Markdown." required></textarea>
+    </div>
+
+    <div class="form-actions">
+        <button type="submit" class="btn btn-save">💾 Сохранить</button>
+        <a href="#" class="btn btn-cancel">❌ Отмена</a>
+    </div>
+</form>
+{% endblock %}
