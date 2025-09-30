@@ -290,14 +290,17 @@ footer {
 }
 
 .articles-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 2rem;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-around;
     margin: 3rem 0;
 }
 
 .article-card {
     background: var(--card-bg);
+    width: 300px;
+    margin: 30px;
     border-radius: 12px;
     overflow: hidden;
     box-shadow: 0 5px 15px var(--card-shadow);
@@ -310,13 +313,20 @@ footer {
 }
 
 .article-image {
+    aspect-ratio: 16/9;
     height: 200px;
+    width: 300px;
     background-size: cover;
     background-position: center;
 }
 
 .article-content {
+    overflow: hidden;
     padding: 1.5rem;
+}
+
+.article-content p {
+    overflow: hidden;
 }
 
 .article-category {
@@ -403,6 +413,7 @@ footer {
 
 .article-form {
     max-width: 900px;
+    width: 60vw;
     margin: 0 auto;
     padding: 2rem;
     background: var(--card-bg);
@@ -516,4 +527,87 @@ footer {
     .form-actions .btn {
         text-align: center;
     }
+}
+
+.article-detail-image {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+}
+
+.article-detail-content {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: var(--text-color);
+}
+
+.article-detail-content p {
+    margin-bottom: 1.2rem;
+    width: 100%;
+}
+
+.article-detail-content h2,
+.article-detail-content h3 {
+    margin: 1.5rem 0 1rem;
+    color: var(--header-bg);
+}
+
+.dark-theme .article-detail-content h2,
+.dark-theme .article-detail-content h3 {
+    color: #6a89b5;
+}
+
+.article-detail-content {
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
+    hyphens: auto;
+}
+
+/* Для таблиц, если они есть в контенте */
+.article-detail-content table {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+}
+
+.article-detail-content th,
+.article-detail-content td {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+/* Для pre/code блоков */
+.article-detail-content pre,
+.article-detail-content code {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    overflow-x: auto; /* но только если нужно прокручивать код, а не ломать макет */
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.search-filters {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+    margin: 1rem 0;
+    flex-wrap: wrap;
+}
+
+.search-filters label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.95rem;
+    color: var(--text-color);
+    cursor: pointer;
+}
+
+.search-filters input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
 }

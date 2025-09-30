@@ -5,19 +5,32 @@
 
 {% block content %}
 {% load static %}
+<main>
 <div class="page-header">
+    <div class="search-box">
+        <input type="text" id="search-input" placeholder="Поиск статей..." />
+    </div>
+    <div class="search-filters">
+        <label>
+            <input type="checkbox" id="source-json" checked> JSON-файлы
+        </label>
+        <label>
+            <input type="checkbox" id="source-db" checked> База данных
+        </label>
+    </div>
     <h1>Все статьи OpenWorld</h1>
+    <a href="{% url 'get_articles' %}" class="btn">Получить все записи в JSON</a>
     <p>Знания, собранные сообществом — от простого к сложному, от древнего к современному.</p>
     <a href="{% url 'create_article' %}" class="btn">Новая статья</a>
 </div>
 
-<div class="articles-grid">
+<div class="articles-grid" id="articles-container">
     {% for article in articles %}
     <article class="article-card">
-        <img class="article-image" src="{% static 'images/article.png' %}">
+        <img class="article-image" src="{{ article.image_url }}">
         <div class="article-content">
             <span class="article-category">{{ article.category }}</span>
-            <h3><a href="#">{{ article.title }}</a></h3>
+            <h3><a href="{% url 'article_detail' article.id %}">{{ article.title }}</a></h3>
             <p>{{ article.content }}</p>
         </div>
     </article>
@@ -29,4 +42,78 @@
     <span>Страница 1 из 1</span>
     <button class="btn pagination-btn">Следующая →</button>
 </div>
+</main>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const searchInput = document.getElementById('search-input');
+    const sourceJson = document.getElementById('source-json');
+    const sourceDb = document.getElementById('source-db');
+    const articlesContainer = document.getElementById('articles-container');
+
+    // Объединённая функция поиска
+    function performSearch() {
+        const query = searchInput.value.trim();
+        const useJson = sourceJson.checked;
+        const useDb = sourceDb.checked;
+
+        // Если оба выключены — очищаем результаты
+        if (!useJson && !useDb) {
+            articlesContainer.innerHTML = '<p>Выберите хотя бы один источник.</p>';
+            return;
+        }
+
+        // Формируем URL с параметрами
+        const url = new URL('{% url "search_articles" %}', window.location.origin);
+        if (query) url.searchParams.set('q', query);
+        if (useJson) url.searchParams.set('source', 'json');
+        if (useDb) url.searchParams.set('source', 'db');
+
+        // Если оба включены — source=json,db
+        if (useJson && useDb) {
+            url.searchParams.set('source', 'json,db');
+        } else if (useJson) {
+            url.searchParams.set('source', 'json');
+        } else if (useDb) {
+            url.searchParams.set('source', 'db');
+        }
+
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                renderArticles(data.articles);
+            })
+            .catch(err => {
+                console.error('Ошибка поиска:', err);
+                articlesContainer.innerHTML = '<p>Ошибка при поиске.</p>';
+            });
+    }
+
+    // Слушаем изменения в поле поиска и чекбоксах
+    searchInput.addEventListener('input', performSearch);
+    sourceJson.addEventListener('change', performSearch);
+    sourceDb.addEventListener('change', performSearch);
+
+    function renderArticles(articles) {
+        if (articles.length === 0) {
+            articlesContainer.innerHTML = '<p>Ничего не найдено.</p>';
+            return;
+        }
+
+        let html = '';
+        articles.forEach(article => {
+            html += `
+                <article class="article-card">
+                    <img class="article-image" src="${article.image_url || ''}" onerror="this.style.display='none'">
+                    <div class="article-content">
+                        <span class="article-category">${article.category || ''}</span>
+                        <h3><a href="/article/${article.id}/">${article.title}</a></h3>
+                        <p>${article.content?.substring(0, 150) || ''}${article.content?.length > 150 ? '...' : ''}</p>
+                    </div>
+                </article>
+            `;
+        });
+        articlesContainer.innerHTML = html;
+    }
+});
+</script>
 {% endblock %}

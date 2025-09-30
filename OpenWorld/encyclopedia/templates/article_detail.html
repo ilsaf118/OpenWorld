@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<main class="container">
+    <div class="page-header">
+        <span class="article-category">{{ article.category }}</span>
+        <h1>{{ article.title }}</h1>
+        <div class="article-meta" style="justify-content: flex-start; margin-top: 0.5rem; color: var(--footer-text);">
+            <span>•</span>
+        </div>
+    </div>
+
+    <article class="article-detail">
+        {% if article.image_url %}
+            <img src="{{ article.image_url }}" alt="{{ article.title }}" class="article-detail-image">
+        {% else %}
+            <div class="article-detail-image-placeholder" style="
+                height: 300px;
+                background: linear-gradient(135deg, #4a6fa5, #6a89b5);
+                border-radius: 12px;
+                margin-bottom: 2rem;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: white;
+                font-weight: bold;
+            ">Изображение статьи</div>
+        {% endif %}
+
+        <div class="article-detail-content">
+            <p>
+                {{ article.content }}
+            </p>
+        </div>
+        <div class="article-actions" style="margin-top: 1rem;">
+    <a href="{% url 'edit_article' article.id %}" class="btn">Редактировать</a>
+    <form method="post" action="{% url 'delete_article' article.id %}" style="display: inline;">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger" onclick="return confirm('Вы уверены, что хотите удалить эту статью?');">
+            Удалить
+        </button>
+    </form>
+</div>
+    </article>
+
+</main>
+{% endblock %}
